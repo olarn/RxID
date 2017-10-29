@@ -31,7 +31,7 @@ let bag = DisposeBag()
 
 enum InfentCry {
     case hungry
-    case pee
+    case poo
     case shit
     case sleepy
     case unknow
@@ -48,7 +48,7 @@ class Infent {
         switch random() {
         case 1: behaviour.onNext(.hungry)
         case 2: behaviour.onNext(.pee)
-        case 3: behaviour.onNext(.shit)
+        case 3: behaviour.onNext(.poo)
         case 4: behaviour.onNext(.sleepy)
         default:
             behaviour.onNext(.unknow)
@@ -63,7 +63,7 @@ id.cry
     .disposed(by: bag)
 
 id.cry
-    .filter { cause in cause == .pee || cause == .shit }
+    .filter { cause in cause == .pee || cause == .poo }
     .subscribe { _ in try! changeDiaper() }
     .disposed(by: bag)
 
