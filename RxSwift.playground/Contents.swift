@@ -5,6 +5,30 @@ import RxCocoa
 
 PlaygroundPage.current.needsIndefiniteExecution = true
 
+func feedMilk() throws {
+    print(#function)
+}
+
+func changeDiaper() throws {
+    print(#function)
+}
+
+func lullBabyToSleep() throws {
+    print(#function)
+}
+
+func sleep() {
+    print(#function)
+}
+
+func random() -> Int {
+    let min = 1
+    let max = 4
+    return Int(arc4random_uniform(UInt32(1 + max - min))) + min
+}
+
+let bag = DisposeBag()
+
 enum InfentCry {
     case hungry
     case pee
@@ -33,19 +57,29 @@ class Infent {
 }
 
 let id = Infent()
-id.cry.subscribe(onNext: { why in
-    switch why {
-    case .hungry:     try! feedMilk()
-    case .pee, .shit: try! changeDiaper()
-    case .sleepy:     try! lullBabyToSleep()
-    case .unknow:
+id.cry
+    .filter { cause in cause == .hungry }
+    .subscribe { _ in try! feedMilk() }
+    .disposed(by: bag)
+
+id.cry
+    .filter { cause in cause == .pee || cause == .shit }
+    .subscribe { _ in try! changeDiaper() }
+    .disposed(by: bag)
+
+id.cry
+    .filter { cause in cause == .sleepy }
+    .subscribe { _ in try! lullBabyToSleep() }
+    .disposed(by: bag)
+
+id.cry
+    .filter { cause in cause == .unknow }
+    .subscribe { _ in
         try! feedMilk()
         try! changeDiaper()
         try! lullBabyToSleep()
-    default:
-        sleep()
     }
-})
+    .disposed(by: bag)
 
 id.somethingWrong()
 id.somethingWrong()
@@ -56,24 +90,4 @@ id.somethingWrong()
 id.somethingWrong()
 id.somethingWrong()
 
-func feedMilk() throws {
-    print(#function)
-}
 
-func changeDiaper() throws {
-    print(#function)
-}
-
-func lullBabyToSleep() throws {
-    print(#function)
-}
-
-func sleep() {
-    print(#function)
-}
-
-func random() -> Int {
-    let min = 1
-    let max = 4
-    return Int(arc4random_uniform(UInt32(1 + max - min))) + min
-}
