@@ -31,8 +31,8 @@ let bag = DisposeBag()
 
 enum InfentCry {
     case hungry
+    case pee
     case poo
-    case shit
     case sleepy
     case unknow
 }
